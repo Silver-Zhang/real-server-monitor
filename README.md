@@ -1,112 +1,112 @@
 # realmon
 
-A read-only CLI tool for monitoring server CPU, memory, GPU, processes, and Slurm jobs on shared Linux research servers.
+适用于共享 Linux 科研服务器的只读 CLI 资源监控工具，可查看 CPU、内存、GPU、进程及 Slurm 作业信息。
 
-## Features
+## 功能特性
 
-- **Process monitoring**: View top processes by CPU, memory, or GPU usage
-- **GPU monitoring**: NVIDIA GPU utilization, memory, temperature, and per-process GPU memory
-- **Slurm integration**: View current Slurm job queue
-- **User filtering**: View resources consumed by a specific user
-- **JSON output**: Machine-readable structured output
-- **Watch mode**: Auto-refreshing display
-- **Privacy-safe**: Sensitive command-line arguments are automatically redacted
+- **进程监控**：按 CPU、内存或 GPU 使用率查看占用最高的进程
+- **GPU 监控**：NVIDIA GPU 利用率、显存、温度及每个进程的显存占用
+- **Slurm 集成**：查看当前 Slurm 作业队列
+- **用户过滤**：查看指定用户的资源占用情况
+- **JSON 输出**：结构化的机器可读输出
+- **Watch 模式**：自动刷新的实时监控
+- **隐私保护**：命令行中的敏感参数自动脱敏
 
-## Installation
+## 安装
 
 ```bash
-# Basic installation
+# 基础安装
 pip install .
 
-# With GPU support (requires NVIDIA drivers)
+# 含 GPU 支持（需要 NVIDIA 驱动）
 pip install ".[gpu]"
 
-# Development
+# 开发模式
 pip install -e ".[dev]"
 ```
 
-## Requirements
+## 运行要求
 
 - Python 3.10+
-- Linux (uses `/proc` filesystem)
-- Optional: NVIDIA GPU with drivers (for GPU monitoring)
-- Optional: Slurm (for job queue monitoring)
+- Linux 系统（依赖 `/proc` 文件系统）
+- 可选：安装了驱动的 NVIDIA GPU（用于 GPU 监控）
+- 可选：Slurm（用于作业队列监控）
 
-## Usage
+## 常用命令示例
 
-### Top processes
+### 查看占用最高的进程
 
 ```bash
-# Default view (GPU processes first, then by CPU, then by memory)
+# 默认视图（GPU 进程优先，然后按 CPU、内存排序）
 realmon top
 
-# Sort by CPU usage
+# 按 CPU 使用率排序
 realmon top --sort cpu
 
-# Sort by memory
+# 按内存使用量排序
 realmon top --sort mem
 
-# Sort by GPU memory
+# 按 GPU 显存排序
 realmon top --sort gpu
 
-# Limit number of processes shown
+# 限制显示条数
 realmon top --limit 20
 ```
 
-### GPU status
+### 查看 GPU 状态
 
 ```bash
 realmon gpu
 ```
 
-### Slurm jobs
+### 查看 Slurm 作业
 
 ```bash
 realmon slurm
 ```
 
-### User processes
+### 查看指定用户的进程
 
 ```bash
-realmon user <username>
+realmon user <用户名>
 ```
 
-### JSON output
+### 输出 JSON
 
 ```bash
 realmon json
 ```
 
-### Watch mode
+### Watch 模式（实时刷新）
 
 ```bash
-# Refresh every 2 seconds (default)
+# 默认每 2 秒刷新一次
 realmon watch
 
-# Custom interval
+# 自定义刷新间隔（秒）
 realmon watch --interval 5
 ```
 
-## Output Fields
+## 输出字段含义
 
-| Field | Description |
-|-------|-------------|
-| PID | Process ID |
-| USER | Process owner |
-| CPU% | CPU usage percentage |
-| CORE_EQ | Equivalent CPU cores used (CPU% / 100) |
-| MEM_GB | Resident memory in GiB |
-| GPU | GPU device ID (if using GPU) |
-| GPU_MEM_MB | GPU memory used in MiB |
-| CWD | Process working directory |
-| CMD | Command line (sanitized) |
+| 字段 | 说明 |
+|------|------|
+| PID | 进程 ID |
+| USER | 进程所属用户 |
+| CPU% | CPU 使用率（百分比）|
+| CORE_EQ | 等效占用核心数（CPU% / 100）|
+| MEM_GB | 常驻内存（GiB）|
+| GPU | GPU 编号（使用 GPU 时显示）|
+| GPU_MEM_MB | GPU 显存占用（MiB）|
+| CWD | 进程当前工作目录 |
+| CMD | 命令行（已脱敏）|
 
-## JSON Output Structure
+## JSON 输出结构
 
 ```json
 {
   "timestamp": "2024-01-01T00:00:00+00:00",
-  "host": "hostname",
+  "host": "主机名",
   "cpu": {"count": 64, "percent": 45.0},
   "memory": {"total_gib": 256.0, "used_gib": 128.0, "percent": 50.0},
   "gpus": [...],
@@ -115,44 +115,44 @@ realmon watch --interval 5
 }
 ```
 
-## Slurm Integration
+## Slurm 集成说明
 
-When Slurm is installed, `realmon slurm` displays the current job queue by parsing `squeue` output. If Slurm is not available, the command gracefully shows "Slurm not available" instead of erroring.
+安装了 Slurm 时，`realmon slurm` 通过解析 `squeue` 输出展示当前作业队列。若 Slurm 不可用，命令会优雅地提示"Slurm 不可用"而不是报错退出。
 
-Only read-only Slurm commands are used (`squeue`, `scontrol show job`). No job-modifying commands (`scancel`, `srun`, `sbatch`) are ever executed.
+本工具只使用只读的 Slurm 命令（`squeue`、`scontrol show job`），**不会**执行任何修改系统状态的命令（`scancel`、`srun`、`sbatch` 等）。
 
-## GPU Dependencies
+## GPU 依赖说明
 
-GPU monitoring requires:
-- NVIDIA GPU with installed drivers
-- `pynvml` Python package (`pip install "realmon[gpu]"`)
+GPU 监控需要：
+- 安装了驱动的 NVIDIA GPU
+- Python 包 `pynvml`（`pip install "realmon[gpu]"`）
 
-If `pynvml` is not installed or NVML initialization fails, GPU features gracefully degrade and show "No GPU information available".
+若 `pynvml` 未安装或 NVML 初始化失败，GPU 功能会优雅降级，显示"无 GPU 信息"，不会导致程序崩溃。
 
-## Permission Limitations
+## 普通用户权限说明
 
-This tool runs as a regular user and does **not** require root privileges.
+本工具以普通用户身份运行，**不需要 root 权限**。
 
-Some limitations when running as a non-root user:
-- Cannot read `/proc/<pid>/cwd` for other users' processes on some systems
-- Cannot read full command lines of other users' processes on hardened systems
-- Fields that cannot be read are shown as empty rather than causing errors
+在非 root 用户下运行时，可能存在以下限制：
+- 在部分系统上，无法读取其他用户进程的 `/proc/<pid>/cwd`
+- 在加固系统上，无法读取其他用户进程的完整命令行
+- 无法读取的字段将显示为空，不会引发错误
 
-## Privacy & Security
+## 隐私与安全说明
 
-- **Command sanitization**: Sensitive arguments (passwords, tokens, API keys, secrets, credentials) are automatically redacted with `***` in all output
-- **Read-only**: No system modifications are ever performed
-- **No network**: No data is sent anywhere
-- **No root**: Does not require or use elevated privileges
+- **命令脱敏**：密码、令牌、API 密钥、密钥等敏感参数在所有输出中自动替换为 `***`
+- **只读工具**：不对系统做任何修改
+- **无网络请求**：不向任何地址发送数据
+- **无需 root**：不申请也不使用任何提权操作
 
-## What This Tool Does NOT Do
+## 当前不支持的功能（第一版暂不实现）
 
-- Web dashboard or HTTP server
-- Database or historical data storage
-- Prometheus metrics export
-- User authentication
-- Process killing or signal sending
-- Slurm job cancellation or submission
-- Rate limiting or resource enforcement
-- System configuration changes
-- Anything requiring root privileges
+- Web 仪表盘或 HTTP 服务
+- 数据库历史记录
+- Prometheus 指标导出
+- 用户登录系统
+- 进程 kill 操作
+- Slurm 作业取消或提交
+- 自动限流或资源强制限制
+- 系统配置修改
+- 任何需要 root 权限的功能
