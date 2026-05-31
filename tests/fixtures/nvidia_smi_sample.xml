@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<nvidia_smi_log>
+    <gpu id="0000:00:04.0">
+        <product_name>NVIDIA A100-SXM4-80GB</product_name>
+        <utilization>
+            <gpu_util>85 %</gpu_util>
+            <memory_util>62 %</memory_util>
+        </utilization>
+        <fb_memory_usage>
+            <total>81920 MiB</total>
+            <used>45000 MiB</used>
+            <free>36920 MiB</free>
+        </fb_memory_usage>
+        <temperature>
+            <gpu_temp>72 C</gpu_temp>
+        </temperature>
+        <processes>
+            <process_info>
+                <pid>12345</pid>
+                <used_memory>44000 MiB</used_memory>
+                <name>python</name>
+            </process_info>
+        </processes>
+    </gpu>
+</nvidia_smi_log>
