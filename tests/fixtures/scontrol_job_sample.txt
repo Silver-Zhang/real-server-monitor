@@ -1,0 +1,14 @@
+JobId=12345 JobName=train_model
+   UserId=user1(1000) GroupId=users(100)
+   Priority=100 Nice=0 Account=default QOS=normal
+   JobState=RUNNING Reason=None Dependency=(null)
+   Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
+   RunTime=1-02:30:00 TimeLimit=2-00:00:00 TimeMin=N/A
+   SubmitTime=2024-01-01T00:00:00 EligibleTime=2024-01-01T00:00:00
+   StartTime=2024-01-01T00:00:00 EndTime=2024-01-03T00:00:00 Deadline=N/A
+   WorkDir=/home/user1/projects/ml-training
+   StdErr=/home/user1/projects/ml-training/slurm-12345.err
+   StdOut=/home/user1/projects/ml-training/slurm-12345.out
+   NumNodes=1 NumCPUs=4 NumTasks=1
+   TRES=cpu=4,mem=16G,node=1
+   Command=/home/user1/projects/ml-training/run.sh
